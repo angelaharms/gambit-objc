@@ -9,13 +9,17 @@
 ;; Selectors
 (expect (not (selector? 42)))
 (expect (selector? (string->selector "stringByAppendingString:")))
-(expect (selector? (string->selector "hi mom")))
 (expect (not (selector? (class "NSObject"))))
 (expect (string=? (selector->string (string->selector "stringByAppendingString:")) "stringByAppendingString:"))
 
 ;; Calling
 (define (expect-method-returns return-value method-name)
-  (expect (equal? return-value (call-method (class "TestMethods") (string->selector method-name)))))
+  (expect (equal? return-value (call-test-method method-name))
+  )
+)
+
+(define (call-test-method method-name) 
+  (call-method (class "TestMethods") (string->selector method-name)))
 
 (expect-method-returns #t "methodReturningYES")
 (expect-method-returns #f "methodReturningNO")
@@ -42,6 +46,5 @@
 (expect (equal? 1142 (begin
 		       (call-method (class "TestMethods") (string->selector "methodTakingInt:") 1142)
 		       (call-method (class "TestMethods") (string->selector "lastIntPassed")))))
-
 
 (display-expect-results)
